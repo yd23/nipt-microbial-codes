@@ -1,0 +1,61 @@
+#clade_separation	0.5
+branch_thickness	2
+branch_bracket_depth	0.8
+#branch_bracket_width	0.5
+annotation_background_alpha	0.3
+#clade_marker_size	80
+#clade_marker_edge_color	#555555
+clade_marker_edge_width	1.2
+
+Bacillaceae	clade_marker_shape	s
+Enterobacteriaceae	clade_marker_shape	*
+Lactobacillaceae	clade_marker_shape	p
+Clostridiaceae	clade_marker_shape	h
+Vibrionaceae	clade_marker_shape	H
+
+Bacillaceae	clade_marker_size	200
+Enterobacteriaceae	clade_marker_size	200
+Lactobacillaceae	clade_marker_size	200
+Clostridiaceae	clade_marker_size	200
+Vibrionaceae	clade_marker_size	200
+Vibrionaceae	clade_marker_edge_width	0.5
+
+Bacillaceae	clade_marker_color	#FFC81D
+Enterobacteriaceae	clade_marker_color	#815375
+Lactobacillaceae	clade_marker_color	#46A169
+Clostridiaceae	clade_marker_color	#E41A1C
+Vibrionaceae	clade_marker_color	#3A85A8
+
+Bacillaceae	annotation_background_color	#FFC81D
+Enterobacteriaceae	annotation_background_color	#815375
+Lactobacillaceae	annotation_background_color	#46A169
+Clostridiaceae	annotation_background_color	#E41A1C
+Vibrionaceae	annotation_background_color	#3A85A8
+
+Bacillaceae	annotation	Bacillaceae
+Enterobacteriaceae	annotation	Enterobacteriaceae
+Lactobacillaceae	annotation	Lactobacillaceae
+Clostridiaceae	annotation	Clostridiaceae
+Vibrionaceae	annotation	Vibrionaceae
+
+Bacillaceae	annotation_font_size	15
+Enterobacteriaceae	annotation_font_size	15
+Lactobacillaceae	annotation_font_size	15
+Clostridiaceae	annotation_font_size	15
+Vibrionaceae	annotation_font_size	15
+Clostridium	annotation_font_size	15
+
+Bacillus	annotation_background_color	#FFC81D
+Lactobacillus	annotation_background_color	#46A169
+Clostridium	annotation_background_color	#E41A1C
+Vibrio	annotation_background_color	#3A85A8
+
+Bacillus	annotation	Bacillus
+Lactobacillus	annotation	Lactobacillus
+Clostridium	annotation	Clostridium
+Vibrio	annotation	Vibrio
+
+Bacillus	annotation_font_size	15
+Lactobacillus	annotation_font_size	15
+Clostridium	annotation_font_size	15
+Vibrio	annotation_font_size	15
