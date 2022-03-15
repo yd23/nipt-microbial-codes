@@ -15,7 +15,6 @@ writeGzFile <- function(df, gzfile){
   write.table(df, gzcon, row.names=F, col.names=T, sep='\t', quote=F)
   close(gzcon)
 }
-outDir<-'./'
 maxCore <- 16
 nLeadCol <- 2
 rpkmTdb<-do.call(cbind, lapply((nLeadCol+1):ncol(tdb), function(i) as.numeric(tdb[,i])/tdb$libSize*1E6/annot$genomeSize[i-nLeadCol]*1000))
@@ -33,8 +32,8 @@ save(annot, tdb, nLeadCol,
      rpkmTdb, tdbFreq, rpkmTdbMax, rpkmTdbRef,
      file=file.path('./','niptmicrobial.Rda'))
 
-writeGzFile(data.frame(lib=tdb[,1], rpkmTdb, stringsAsFactors = F), file.path(outDir, 'niptmicrobial.all.RPKMmat.tsv.gz'))
-writeGzFile(data.frame(annot,rpkmTdbRef, rpkmTdbMax, tdbFreq), file.path(outDir, 'niptmicrobial.rpkmRef.popFreq.tsv.gz'))
+writeGzFile(data.frame(lib=tdb[,1], rpkmTdb, stringsAsFactors = F), file.path('niptmicrobial.all.RPKMmat.tsv.gz'))
+writeGzFile(data.frame(annot,rpkmTdbRef, rpkmTdbMax, tdbFreq), file.path('niptmicrobial.rpkmRef.popFreq.tsv.gz'))
 
 
 ####################### ####################### ####################### #######################
@@ -227,7 +226,6 @@ ggsave(file='F1CD.generalInformation.pdf',plot=fig,width = 25,height = 20)
 ####################### ####################### ####################### #######################
 # Simulation of potential saturation effect (Fig 1A)
 load('niptmicrobial.Rda')
-outDir<-'./'
 maxCore <- 1
 Ns<- seq(1, 2001, length.out = 201)
 #Ns<- seq(1, 101, length.out = 11)
@@ -244,7 +242,7 @@ simfig2<-mclapply(Ns, function(N) {
   apply(mergs, 1, function(x) sum(x>0, na.rm=T) )
 }, mc.cores=maxCore)
 
-pdf(file.path(outDir, 'F1A.detectionRateSimulation.pdf'), width = 8, height=5)
+pdf(file.path('F1A.detectionRateSimulation.pdf'), width = 8, height=5)
 boxplot(simfig2, xlab='Number of individuals sampled', ylab='Number of distinct species detected', names=Ns, cex=0.5)
 dev.off()
 
@@ -1038,8 +1036,7 @@ MEs <- mergedMEs
 
 # save so far
 ## for gene
-outDir='./'
-save(edata, MEs, moduleLabels, dynamicColors, moduleColors, geneTree, file = file.path(outDir,"niptmetagenWGCNA.RData"))
+save(edata, MEs, moduleLabels, dynamicColors, moduleColors, geneTree, file = file.path("niptmetagenWGCNA.RData"))
 
 # names (colors) of the modules
 modNames <- substring(names(MEs), 3)
@@ -1069,15 +1066,15 @@ dimnames(modTOM) = list(modProbes, modProbes)
 
 # Export the network into edge and node list files Cytoscape can read
 cyt = exportNetworkToCytoscape(modTOM, 
-                               edgeFile = file.path(outDir, paste("CytoscapeInput-edges-", paste(modules, collapse="-"), ".txt", sep="")), 
-                               nodeFile = file.path(outDir, paste("CytoscapeInput-nodes-", paste(modules, collapse="-"), ".txt", sep="")), 
+                               edgeFile = file.path(paste("CytoscapeInput-edges-", paste(modules, collapse="-"), ".txt", sep="")), 
+                               nodeFile = file.path(paste("CytoscapeInput-nodes-", paste(modules, collapse="-"), ".txt", sep="")), 
                                weighted = TRUE, threshold = 0.02,  altNodeNames= modProbes, nodeNames = colnames(edata)[!moduleColors %in% 'grey'], 
                                nodeAttr = data.frame(bactvir=as.integer(bactORvir$bact[match(colnames(edata), bactORvir$head)][!moduleColors %in% 'grey']), moduleColors[inModule]));
 
 # if hub gene is defined by mod mem...
 geneModuleMembership <- as.data.frame(cor(edata, MEs, use = "p"))
 rownames(geneModuleMembership)<-probes
-write.table(cbind(bactORvir$head[match(colnames(edata), bactORvir$head)], moduleColors, geneModuleMembership), file=file.path(outDir, "geneModuleMembership.csv"), sep='\t', col.names=T, row.names=F, quote=F)
+write.table(cbind(bactORvir$head[match(colnames(edata), bactORvir$head)], moduleColors, geneModuleMembership), file=file.path("geneModuleMembership.csv"), sep='\t', col.names=T, row.names=F, quote=F)
 
 select_edges = read.csv('CytoscapeInput-edges-blue-turquoise.txt', stringsAsFactors=F, header=T,sep='\t')
 vir_row = sapply(select_edges$toNode, function(x) !as.logical(bactORvir$bact[match(x,bactORvir$head)]))
@@ -1100,10 +1097,48 @@ for(modcol in unique(moduleColors)){
   nTopH = 10
   IMConn = softConnectivity(edata[, modProbes]);
   hgtopidx<-which(rank(-IMConn)<=nTopH)
-  write.table(cbind(modProbes[hgtopidx], bactORvir[match(modProbes[hgtopidx],bactORvir[,1]),]), file = file.path(outDir, paste0("wgcnaHubgene-", modcol, "-topH", nTopH, ".txt")), sep='\t', col.names=F, row.names=F, quote=F)
+  write.table(cbind(modProbes[hgtopidx], bactORvir[match(modProbes[hgtopidx],bactORvir[,1]),]), file = file.path(paste0("wgcnaHubgene-", modcol, "-topH", nTopH, ".txt")), sep='\t', col.names=F, row.names=F, quote=F)
   
   #this is based on plos paper's own hubgene, high module membership
   # this is not always consitant with TOM or cor
   hgtopidx<-which(rank(-abs(geneModuleMembership[inModule,modname]))<=nTopH)
-  write.table(annot[match(modProbes[hgtopidx],bactORvir[,1]),], file = file.path(outDir, paste0("plosHubgene-", modcol, "-topH", nTopH, ".txt")), sep='\t', col.names=F, row.names=F, quote=F)
+  write.table(annot[match(modProbes[hgtopidx],bactORvir[,1]),], file = file.path(paste0("plosHubgene-", modcol, "-topH", nTopH, ".txt")), sep='\t', col.names=F, row.names=F, quote=F)
 }
+
+
+
+
+####################### ####################### ####################### #######################
+# sim for baseline prediction poison model lambda
+# start resampling
+# we generate n length of N idxs and sum them up repectively
+# then for each column, we do a pois estimate, the maximum likelyhood estimator is just the mean.
+
+library(parallel)
+n <- 1000
+N<- seq(1, 1001, length.out = 21) # each sample size N can be considered a function related to sequencing depth, as relatively to the depth of our nipt data, which is typically 0.1X of the human genome.
+nrep<-1000
+set.seed(1000)
+libi<-seq_len(nrow(tdb))
+tdbSizeFactors<-tdb$libSize/median(tdb$libSize)
+tdbM<-as.matrix(tdb[, -(1:nLeadCol)])
+sim<-parallel::mclapply(N, function(sN) {
+  message(sN)
+  tmp<-do.call(rbind, parallel::mclapply(seq_len(nrep), function(j) {
+    message(j, ' j of sN ', sN)
+    mergs<-do.call(rbind, lapply(1:n, function(i) {
+      message(i, ' i of n ', n)
+      ii<-sample(libi, size = sN, replace = T)
+      colSums(tdb[ii, -(1:nLeadCol)]*tdbSizeFactors[ii])
+    }))
+    apply(mergs, 2, function(x) mean(x, na.rm=T))
+  },mc.cores=maxCore))
+  apply(tmp, 2, function(x) c( mean(x, na.rm=T), sd(x, na.rm=T) ))
+}, mc.cores=maxCore)
+###
+simMean<-do.call(rbind, lapply(sim, function(x) x[1,]))
+simSd<-do.call(rbind, lapply(sim, function(x) x[2,]))
+simSd<-cbind(simN=N, simSd)
+simMean<-cbind(simN=N, simMean)
+writeGzFile(simMean,file.path('simPoisLambdaMean.1-1001.n1000.tsv.gz'))
+writeGzFile(simSd,file.path('simPoisLambdaSd.1-1001.n1000.tsv.gz'))
